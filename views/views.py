@@ -32,8 +32,11 @@ async def index(request: Request, page: int = Query(default=1, ge=1)):
 async def about(request: Request):
     return templates.TemplateResponse('about.html', {'request': request})
 
-
 @router.get('/contact', response_class=HTMLResponse, name='contact')
+async def contact(request: Request):
+    return templates.TemplateResponse('contact.html', {'request': request})
+
+@router.post('/contact', response_class=HTMLResponse)
 async def contact(
         request: Request,
         title: str = Form(max_length=128),

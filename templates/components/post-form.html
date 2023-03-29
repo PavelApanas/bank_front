@@ -15,11 +15,17 @@
                                     <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
                                 </div>
                                 <br />
-                                <div class="d-none" id="submitSuccessMessage">
+                                {% if is_submit %}
+                                <div class="d" id="submitSuccessMessage">
                                     <div class="text-center mb-3">
                                         <div class="fw-bolder">Form submission successful!</div>
                                     </div>
                                 </div>
-                                <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+                                {% endif %}
+                                {% if error %}
+                                <div class="d" id="submitErrorMessage">
+                                    <div class="text-center text-danger mb-3">{{error}}</div>
+                                </div>
+                                {% endif %}
                                 <button class="btn btn-primary text-uppercase" id="submitButton" type="submit">Send</button>
                             </form>
