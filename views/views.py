@@ -29,6 +29,11 @@ async def about(request: Request):
     return templates.TemplateResponse('about.html', {'request': request})
 
 
+@router.get('/contact', response_class=HTMLResponse, name='contact')
+async def contact(request: Request):
+    return templates.TemplateResponse('contact.html', {'request': request})
+
+
 @router.get('/{post_slug}', response_class=HTMLResponse, name='post_detail')
 async def post_detail(request: Request, post_slug: str = Path(max_length=128)):
     cur.execute('SELECT * FROM post WHERE slug = ?;', (post_slug,))
@@ -36,3 +41,4 @@ async def post_detail(request: Request, post_slug: str = Path(max_length=128)):
     if obj:
         return templates.TemplateResponse('post.html', {'request': request, 'post': obj[0]})
     raise HTTPException(status_code=404, detail='page not found')
+

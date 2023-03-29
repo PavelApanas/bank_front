@@ -26,6 +26,7 @@ MAIN PAGE
                     <div class="d-flex justify-content-center mb-4">
 
                         {% if current_page > 1 %}
+                        <a class="btn btn-circle text-uppercase" href="{{url_for('index')|query(page=1)}}">&lt&lt;</a>
                         <a class="btn btn-circle text-uppercase" href="{{url_for('index')|query(page=current_page-1)}}">&lt;</a>
                         {% endif %}
 
@@ -33,12 +34,13 @@ MAIN PAGE
                         {% if current_page == page %}
                         <a class="btn btn-danger text-uppercase" href="#!">{{page}}</a>
                         {% else %}
-                        <a class="btn btn-circle text-uppercase" href="{{url_for('index')|query(page=page)}}">{{page}}</a>
+                        <a class="btn btn-floating text-red btn-lg text-uppercase" href="{{url_for('index')|query(page=page)}}">{{page}}</a>
                         {% endif %}
                         {% endfor %}
 
                         {% if current_page < page_count %}
                         <a class="btn btn-circle text-uppercase" href="{{url_for('index')|query(page=current_page+1)}}">&gt;</a>
+                        <a class="btn btn-circle text-uppercase" href="{{url_for('index')|query(page=page_count)}}">&gt&gt;</a>
                         {% endif %}
 
                     </div>
