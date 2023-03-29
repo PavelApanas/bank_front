@@ -1,3 +1,4 @@
+from math import ceil
 from fastapi import Path, HTTPException, Query
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
@@ -10,9 +11,17 @@ from .schemas import Post
 
 @router.get('/', response_class=HTMLResponse, name='index')
 async def index(request: Request, page: int = Query(default=1, ge=1)):
-    cur.execute('SELECT * FROM post LIMIT ?;',(5*page, ))
+    cur.execute('SELECT count(*) from POST')
+    objs_count = cur.fetchall()[0]
+    page_count = ceil(objs_count / 5)
+    cur.execute('SELECT * FROM post LIMIT ? OFFSET ?;',(5,page*5-5 ))
     objs = Post.from_sql(cur.fetchall())
-    return templates.TemplateResponse('index.html', {'request': request, 'posts': objs, 'page': page})
+    return templates.TemplateResponse('index.html', {
+        'request': request,
+        'posts': objs,
+        'current_page': page,
+        'page_count': page_count
+    })
 
 
 @router.get('/about', response_class=HTMLResponse, name='about')
