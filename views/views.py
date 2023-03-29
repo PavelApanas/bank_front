@@ -2,7 +2,7 @@ from datetime import datetime
 from math import ceil
 from sqlite3 import IntegrityError
 
-from fastapi import Path, HTTPException, Query, Form
+from fastapi import Path, HTTPException, Query, Form, UploadFile, BackgroundTasks
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
 from slugify import slugify
@@ -36,13 +36,24 @@ async def about(request: Request):
 async def contact(request: Request):
     return templates.TemplateResponse('contact.html', {'request': request})
 
+def save_file(file: UploadFile):
+    with open(file.filename, 'wb') as out:
+        out.write(file.file.read())
+
+
+
 @router.post('/contact', response_class=HTMLResponse)
 async def contact(
         request: Request,
+        background_task: BackgroundTasks,
+        file: UploadFile,
         title: str = Form(max_length=128),
         author: str = Form(max_length=32),
-        message: str = Form()
+        message: str = Form(),
+
+
 ):
+    background_task.add_task(save_file, file)
     slug = slugify(title)
     date_created = datetime.now()
     cur.execute('''
