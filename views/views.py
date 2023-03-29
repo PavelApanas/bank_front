@@ -12,7 +12,7 @@ from .schemas import Post
 @router.get('/', response_class=HTMLResponse, name='index')
 async def index(request: Request, page: int = Query(default=1, ge=1)):
     cur.execute('SELECT count(*) from POST')
-    objs_count = cur.fetchall()[0]
+    objs_count = cur.fetchone()[0]
     page_count = ceil(objs_count / 5)
     cur.execute('SELECT * FROM post LIMIT ? OFFSET ?;',(5,page*5-5 ))
     objs = Post.from_sql(cur.fetchall())
