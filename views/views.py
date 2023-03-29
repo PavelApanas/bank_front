@@ -1,7 +1,11 @@
+from datetime import datetime
 from math import ceil
+from sqlite3 import IntegrityError
+
 from fastapi import Path, HTTPException, Query, Form
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
+from slugify import slugify
 
 from .router import router
 from .settings import templates
@@ -30,7 +34,23 @@ async def about(request: Request):
 
 
 @router.get('/contact', response_class=HTMLResponse, name='contact')
-async def contact(request: Request):
+async def contact(
+        request: Request,
+        title: str = Form(max_length=128),
+        author: str = Form(max_length=32),
+        message: str = Form()
+):
+    slug = slugify(title)
+    date_created = datetime.now()
+    cur.execute('''
+    INSERT INTO post(
+        title,
+        author,
+        slug,
+        date_created,
+        body
+    ) VALUES (?, ?, ?, ?, ?);
+    ''', (title, author, slug, date_created, message))
     return templates.TemplateResponse('contact.html', {'request': request})
 
 
