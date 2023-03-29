@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 
 from views.settings import static
-from views.views import router
-from views.database import insert_posts
+from views.views import router, exception_data
 
 
-app = FastAPI()
+
+app = FastAPI(exception_handlers=exception_data)
 app.mount('/static', static, 'static')
 app.include_router(router=router)
 # insert_posts()
