@@ -9,7 +9,7 @@ from slugify import slugify
 
 from .router import router
 from .settings import templates
-from .database import cur
+from .database import cur, conn
 from .schemas import Post
 
 
@@ -51,7 +51,15 @@ async def contact(
         body
     ) VALUES (?, ?, ?, ?, ?);
     ''', (title, author, slug, date_created, message))
-    return templates.TemplateResponse('contact.html', {'request': request})
+    try:
+        conn.commit()
+    except IntegrityError:
+        is_submit = False
+        error = 'Пост с таким названием существует!'
+    else:
+        is_submit = True
+        error = ''
+    return templates.TemplateResponse('contact.html', {'request': request, 'is_submit': is_submit, 'error': error})
 
 
 @router.get('/{post_slug}', response_class=HTMLResponse, name='post_detail')
